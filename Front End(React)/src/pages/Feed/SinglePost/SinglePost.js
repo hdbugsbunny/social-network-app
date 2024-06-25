@@ -12,9 +12,8 @@ class SinglePost extends Component {
   };
 
   componentDidMount() {
-    // eslint-disable-next-line no-unused-vars
-    const postId = this.props.match.params.postId;
-    fetch("URL")
+    const postId = window.location.pathname;
+    fetch(`http://localhost:8080/feed/posts${postId}`)
       .then((res) => {
         if (res.status !== 200) {
           throw new Error("Failed to fetch status");
@@ -25,6 +24,7 @@ class SinglePost extends Component {
         this.setState({
           title: resData.post.title,
           author: resData.post.creator.name,
+          image: `http://localhost:8080/${resData.post.imageUrl}`,
           date: new Date(resData.post.createdAt).toLocaleDateString("en-US"),
           content: resData.post.content,
         });
