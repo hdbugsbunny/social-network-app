@@ -1,3 +1,4 @@
+const path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
@@ -10,6 +11,7 @@ const feedRoutes = require("./routes/feed");
 
 // app.use(bodyParser.urlencoded({ extended: true })); //* uses x-www-form-urlencoded
 app.use(bodyParser.json()); //* uses application/json
+app.use("/images", express.static(path.join(__dirname, "images")));
 
 //! FOR SOLVING CORS ORIGIN ERRORS
 app.use((req, res, next) => {
@@ -23,6 +25,12 @@ app.use((req, res, next) => {
 });
 
 app.use("/feed", feedRoutes);
+app.use((error, req, res, next) => {
+  console.log("🚀 ~ app.use ~ error:", error);
+  const { statusCode, message } = error;
+  res.status(statusCode || 500).json({ message });
+});
+
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() =>
