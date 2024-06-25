@@ -18,6 +18,12 @@ exports.createPost = (req, res, next) => {
   // TODO: Create a post in the database
   res.status(201).json({
     message: "Post created successfully",
-    post: { id: new Date().toISOString(), title, content },
+    post: {
+      _id: new Date().toISOString(),
+      title,
+      content,
+      creator: { name: "Harshit" },
+      createdAt: new Date(),
+    },
   });
 };
