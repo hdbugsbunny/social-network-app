@@ -2,6 +2,7 @@ const path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const multer = require("multer");
 const app = express();
 const port = 8080;
 
@@ -9,8 +10,29 @@ require("dotenv").config();
 
 const feedRoutes = require("./routes/feed");
 
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "images");
+  },
+  filename: (req, file, cb) => {
+    cb(null, `Image-${file.originalname}`);
+  },
+});
+
+const imageFilter = (req, file, cb) => {
+  const validImages = ["image/png", "image/jpeg", "image/jpg"];
+  if (validImages.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
 // app.use(bodyParser.urlencoded({ extended: true })); //* uses x-www-form-urlencoded
 app.use(bodyParser.json()); //* uses application/json
+app.use(
+  multer({ storage: fileStorage, fileFilter: imageFilter }).single("image")
+);
 app.use("/images", express.static(path.join(__dirname, "images")));
 
 //! FOR SOLVING CORS ORIGIN ERRORS
