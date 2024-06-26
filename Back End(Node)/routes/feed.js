@@ -14,10 +14,20 @@ router.get("/posts/:postId", feedController.getPost);
 router.post(
   "/createPost",
   [
-    body("title").trim().isLength({ min: 7 }),
+    body("title").trim().isLength({ min: 5 }),
     body("content").trim().isLength({ min: 5 }),
   ],
   feedController.createPost
+);
+
+//* PUT /feed/posts/:postId
+router.put(
+  "/posts/:postId",
+  [
+    body("title").trim().isLength({ min: 5 }),
+    body("content").trim().isLength({ min: 5 }),
+  ],
+  feedController.updatePost
 );
 
 module.exports = router;
