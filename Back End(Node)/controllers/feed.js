@@ -113,3 +113,29 @@ exports.updatePost = (req, res, next) => {
       next(error);
     });
 };
+
+exports.deletePost = (req, res, next) => {
+  const { postId } = req.params;
+  Post.findById(postId)
+    .then((post) => {
+      if (!post) {
+        const error = new Error(`Post With ${postId} Not Found!`);
+        error.statusCode = 404;
+        throw error;
+      }
+      //TODO: Check LoggedIn User
+      const filePath = path.join(__dirname, "..", post.imageUrl);
+      fs.unlink(filePath, (err) => {
+        console.log("🚀 ~ fs.unlink ~ err:", err);
+      });
+      return Post.findByIdAndDelete(postId);
+    })
+    .then((deletedPost) => {
+      console.log("🚀 ~ .then ~ deletedPost:", deletedPost);
+      res.status(200).json({ message: "Post Deleted Successfully!" });
+    })
+    .catch((error) => {
+      if (!error.statusCode) error.statusCode = 500;
+      next(error);
+    });
+};
