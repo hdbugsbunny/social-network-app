@@ -114,6 +114,11 @@ exports.updatePost = (req, res, next) => {
         error.statusCode = 404;
         throw error;
       }
+      if (post.creator.toString() !== req.userId) {
+        const error = new Error(`User is Not Authorized to Update ${postId}!`);
+        error.statusCode = 403;
+        throw error;
+      }
       if (imageUrl !== post.imageUrl) {
         const filePath = path.join(__dirname, "..", post.imageUrl);
         fs.unlink(filePath, (err) => {
@@ -145,15 +150,25 @@ exports.deletePost = (req, res, next) => {
         error.statusCode = 404;
         throw error;
       }
-      //TODO: Check LoggedIn User
+      if (post.creator.toString() !== req.userId) {
+        const error = new Error(`User is Not Authorized to Delete ${postId}!`);
+        error.statusCode = 403;
+        throw error;
+      }
       const filePath = path.join(__dirname, "..", post.imageUrl);
       fs.unlink(filePath, (err) => {
         console.log("🚀 ~ fs.unlink ~ err:", err);
       });
       return Post.findByIdAndDelete(postId);
     })
-    .then((deletedPost) => {
-      console.log("🚀 ~ .then ~ deletedPost:", deletedPost);
+    .then(() => {
+      return User.findById(req.userId);
+    })
+    .then((user) => {
+      user.posts.pull(postId);
+      return user.save();
+    })
+    .then(() => {
       res.status(200).json({ message: "Post Deleted Successfully!" });
     })
     .catch((error) => {
