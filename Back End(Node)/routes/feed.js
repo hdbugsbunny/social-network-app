@@ -9,11 +9,12 @@ const isAuth = require("../middleware/isAuth");
 router.get("/posts", isAuth, feedController.getPosts);
 
 //* GET /feed/posts/:postId
-router.get("/posts/:postId", feedController.getPost);
+router.get("/posts/:postId", isAuth, feedController.getPost);
 
 //* POST /feed/createPost
 router.post(
   "/createPost",
+  isAuth,
   [
     body("title").trim().isLength({ min: 5 }),
     body("content").trim().isLength({ min: 5 }),
@@ -24,6 +25,7 @@ router.post(
 //* PUT /feed/posts/:postId
 router.put(
   "/posts/:postId",
+  isAuth,
   [
     body("title").trim().isLength({ min: 5 }),
     body("content").trim().isLength({ min: 5 }),
@@ -32,6 +34,6 @@ router.put(
 );
 
 //* DELETE /feed/posts/:postId
-router.delete("/posts/:postId", feedController.deletePost);
+router.delete("/posts/:postId", isAuth, feedController.deletePost);
 
 module.exports = router;
