@@ -10,6 +10,7 @@ require("dotenv").config();
 
 const feedRoutes = require("./routes/feed");
 const authRoutes = require("./routes/auth");
+const userRoutes = require("./routes/user");
 
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -49,6 +50,7 @@ app.use((req, res, next) => {
 
 app.use("/feed", feedRoutes);
 app.use("/auth", authRoutes);
+app.use("/user", userRoutes);
 
 app.use((error, req, res, next) => {
   console.log("🚀 ~ app.use ~ error:", error);
