@@ -53,7 +53,6 @@ app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
 
 app.use((error, req, res, next) => {
-  console.log("🚀 ~ app.use ~ error:", error);
   const { statusCode, message, data } = error;
   res.status(statusCode || 500).json({ message, data });
 });
