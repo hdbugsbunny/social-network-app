@@ -63,12 +63,7 @@ mongoose
     const server = app.listen(port, () =>
       console.log(`Example app listening on port ${port}!`)
     );
-    const io = require("socket.io")(server, {
-      cors: {
-        origin: "*",
-        methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-      },
-    });
+    const io = require("./socket").init(server);
     io.on("connection", (socket) => {
       console.log("🚀 ~ io.on ~ socket:", socket);
     });
