@@ -59,11 +59,20 @@ app.use((error, req, res, next) => {
 
 mongoose
   .connect(process.env.MONGODB_URI)
-  .then(() =>
-    app.listen(port, () =>
+  .then(() => {
+    const server = app.listen(port, () =>
       console.log(`Example app listening on port ${port}!`)
-    )
-  )
+    );
+    const io = require("socket.io")(server, {
+      cors: {
+        origin: "*",
+        methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+      },
+    });
+    io.on("connection", (socket) => {
+      console.log("🚀 ~ io.on ~ socket:", socket);
+    });
+  })
   .catch((error) => {
     console.log("🚀 ~ error:", error);
   });
