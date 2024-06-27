@@ -42,6 +42,17 @@ class Feed extends Component {
     openSocket("http://localhost:8080");
   }
 
+  addPost = (post) => {
+    this.setState((prevState) => {
+      const updatedPosts = [...prevState.post];
+      if (prevState.postPage === 1) {
+        updatedPosts.pop();
+        updatedPosts.unshift(post);
+      }
+      return { post: updatedPosts, totalPosts: prevState.totalPosts + 1 };
+    });
+  };
+
   loadPosts = (direction) => {
     if (direction) {
       this.setState({ postsLoading: true, posts: [] });
