@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from "react";
+import openSocket from "socket.io-client";
 import Button from "../../components/Button/Button";
 import ErrorHandler from "../../components/ErrorHandler/ErrorHandler";
 import FeedEdit from "../../components/Feed/FeedEdit/FeedEdit";
@@ -38,6 +39,7 @@ class Feed extends Component {
       .catch(this.catchError);
 
     this.loadPosts();
+    openSocket("http://localhost:8080");
   }
 
   loadPosts = (direction) => {
