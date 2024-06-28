@@ -30,7 +30,7 @@ exports.getPosts = async (req, res, next) => {
 exports.getPost = async (req, res, next) => {
   const { postId } = req.params;
   try {
-    const post = await Post.findById(postId);
+    const post = await Post.findById(postId).populate("creator");
     if (!post) {
       const error = new Error(`Post With ${postId} Not Found!`);
       error.statusCode = 404;
@@ -139,13 +139,13 @@ exports.updatePost = async (req, res, next) => {
 exports.deletePost = async (req, res, next) => {
   const { postId } = req.params;
   try {
-    const post = await Post.findById(postId);
+    const post = await Post.findById(postId).populate("creator");
     if (!post) {
       const error = new Error(`Post With ${postId} Not Found!`);
       error.statusCode = 404;
       throw error;
     }
-    if (post.creator.toString() !== req.userId) {
+    if (post.creator._id.toString() !== req.userId) {
       const error = new Error(`User is Not Authorized to Delete ${postId}!`);
       error.statusCode = 403;
       throw error;
@@ -158,6 +158,7 @@ exports.deletePost = async (req, res, next) => {
     const user = await User.findById(req.userId);
     user.posts.pull(postId);
     await user.save();
+    io.getIO().emit("post", { action: "delete", post: postId });
     res.status(200).json({ message: "Post Deleted Successfully!" });
   } catch (error) {
     if (!error.statusCode) error.statusCode = 500;
