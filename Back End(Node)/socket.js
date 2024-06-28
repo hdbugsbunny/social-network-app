@@ -5,7 +5,6 @@ module.exports = {
     io = require("socket.io")(httpServer, {
       cors: {
         origin: "*",
-        methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
       },
     });
     return io;

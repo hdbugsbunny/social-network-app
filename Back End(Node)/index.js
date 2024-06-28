@@ -64,8 +64,8 @@ mongoose
       console.log(`Example app listening on port ${port}!`)
     );
     const io = require("./socket").init(server);
-    io.on("connection", (socket) => {
-      console.log("🚀 ~ io.on ~ socket:", socket);
+    io.on("connection", () => {
+      console.log("Client connected");
     });
   })
   .catch((error) => {
